@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Moderator\EndorsementController;
+use App\Http\Controllers\Moderator\OsaForm3ApprovalController;
 use App\Http\Controllers\Org\ActivityRequestController;
 use App\Http\Controllers\Org\DocumentUploadController;
+use App\Http\Controllers\Org\OsaForm3Controller;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +23,8 @@ Route::middleware('auth')->group(function () {
         Route::post('requests', [ActivityRequestController::class, 'store'])->name('requests.store');
         Route::get('requests/{activityRequest}', [ActivityRequestController::class, 'show'])->name('requests.show');
         Route::post('requests/{activityRequest}/documents', [DocumentUploadController::class, 'store'])->name('documents.store');
+        Route::get('requests/{activityRequest}/osa-form-3', [OsaForm3Controller::class, 'create'])->name('osa-form-3.create');
+        Route::post('requests/{activityRequest}/osa-form-3', [OsaForm3Controller::class, 'store'])->name('osa-form-3.store');
     });
 
     // Moderator
@@ -28,6 +32,9 @@ Route::middleware('auth')->group(function () {
         Route::get('queue', [EndorsementController::class, 'index'])->name('queue');
         Route::get('requests/{activityRequest}', [EndorsementController::class, 'show'])->name('requests.show');
         Route::post('requests/{activityRequest}/decision', [EndorsementController::class, 'decide'])->name('requests.decide');
+        Route::get('osa-form-3', [OsaForm3ApprovalController::class, 'index'])->name('osa-form-3.index');
+        Route::get('osa-form-3/{osaForm3}', [OsaForm3ApprovalController::class, 'show'])->name('osa-form-3.show');
+        Route::post('osa-form-3/{osaForm3}/decision', [OsaForm3ApprovalController::class, 'decide'])->name('osa-form-3.decide');
     });
 
     Route::view('/osa-admin/queue', 'osa-admin.queue')->middleware('role:osa_admin')->name('osa-admin.queue');
