@@ -190,6 +190,7 @@
   },
   "active": "4e2b1c536130aa0f",
   "lastOpenFiles": [
+    "storage/framework/testing/disks/public/uploads/1/EylCh3JVAt4X5FEWdKI1RFczKRSAbZ4Sa8BMxj2t.pdf",
     "storage/framework/testing/disks/public/uploads/1/SayoRhv91dCku753QEG02P4atfwGCaytCV45egeZ.pdf",
     "database/seeders/DemoSeeder.php",
     "public/build/assets/app-DFkYEXKG.css",
@@ -200,7 +201,6 @@
     "storage/framework/views/7d9feaeda39f117b87f29da2ec6c84b4.php",
     "resources/views/archive/index.blade.php",
     "resources/views/notifications/index.blade.php",
-    "resources/views/archive",
     "vendor/blade-ui-kit/blade-heroicons/resources/svg/s-x-mark.svg",
     "vendor/blade-ui-kit/blade-heroicons/resources/svg/s-x-circle.svg",
     "vendor/blade-ui-kit/blade-heroicons/resources/svg/s-wrench.svg",
