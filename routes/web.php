@@ -6,6 +6,8 @@ use App\Http\Controllers\Moderator\OsaForm3ApprovalController;
 use App\Http\Controllers\Org\ActivityRequestController;
 use App\Http\Controllers\Org\DocumentUploadController;
 use App\Http\Controllers\Org\OsaForm3Controller;
+use App\Http\Controllers\OsaAdmin\ChecklistController;
+use App\Http\Controllers\OsaAdmin\ReviewQueueController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,7 +39,16 @@ Route::middleware('auth')->group(function () {
         Route::post('osa-form-3/{osaForm3}/decision', [OsaForm3ApprovalController::class, 'decide'])->name('osa-form-3.decide');
     });
 
-    Route::view('/osa-admin/queue', 'osa-admin.queue')->middleware('role:osa_admin')->name('osa-admin.queue');
+    // OSA Admin
+    Route::middleware('role:osa_admin')->prefix('osa-admin')->name('osa-admin.')->group(function () {
+        Route::get('queue', [ReviewQueueController::class, 'index'])->name('queue');
+        Route::get('requests/{activityRequest}', [ReviewQueueController::class, 'show'])->name('requests.show');
+        Route::post('requests/{activityRequest}/start-review', [ReviewQueueController::class, 'startReview'])->name('requests.start-review');
+        Route::post('requests/{activityRequest}/decision', [ReviewQueueController::class, 'decide'])->name('requests.decide');
+        Route::post('requests/{activityRequest}/nudge', [ReviewQueueController::class, 'nudge'])->name('requests.nudge');
+        Route::patch('checklist/{checklistItem}', [ChecklistController::class, 'update'])->name('checklist.update');
+    });
+
     Route::view('/osa-director/queue', 'osa-director.queue')->middleware('role:osa_director')->name('osa-director.queue');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

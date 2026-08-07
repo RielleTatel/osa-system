@@ -2,10 +2,16 @@
 
 namespace App\Services;
 
+use App\Enums\ActivityStatus;
 use App\Enums\ChecklistStatus;
 use App\Enums\DocumentType;
+use App\Enums\Role;
 use App\Models\ActivityRequest;
 use App\Models\ChecklistItem;
+use App\Models\User;
+use App\Notifications\PacketReadyForPhysicalStage;
+use App\Notifications\StatusChanged;
+use Illuminate\Support\Facades\Notification;
 
 class ChecklistService
 {
@@ -86,6 +92,18 @@ class ChecklistService
             'status' => ChecklistStatus::Verified,
             'notes' => $notes ?? $item->notes,
         ]);
+
+        $request = $item->activityRequest;
+
+        if ($request->status === ActivityStatus::OsaReviewing && $this->isComplete($request)) {
+            $request->update(['status' => ActivityStatus::DocsComplete]);
+
+            Notification::send(
+                User::where('role', Role::OsaAdmin)->get(),
+                new PacketReadyForPhysicalStage($request),
+            );
+            Notification::send($request->organization->officers, new StatusChanged($request));
+        }
     }
 
     public function itemNameFor(DocumentType $type): string
