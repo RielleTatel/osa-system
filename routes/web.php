@@ -7,7 +7,10 @@ use App\Http\Controllers\Org\ActivityRequestController;
 use App\Http\Controllers\Org\DocumentUploadController;
 use App\Http\Controllers\Org\OsaForm3Controller;
 use App\Http\Controllers\OsaAdmin\ChecklistController;
+use App\Http\Controllers\OsaAdmin\ModeratorAssignmentController;
+use App\Http\Controllers\OsaAdmin\OrganizationController;
 use App\Http\Controllers\OsaAdmin\ReviewQueueController;
+use App\Http\Controllers\OsaAdmin\UserController;
 use App\Http\Controllers\OsaDirector\NotationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReferenceSlipController;
@@ -52,6 +55,17 @@ Route::middleware('auth')->group(function () {
         Route::patch('checklist/{checklistItem}', [ChecklistController::class, 'update'])->name('checklist.update');
         Route::post('requests/{activityRequest}/slip', [ReferenceSlipController::class, 'generate'])->name('slip.generate');
         Route::post('slips/{referenceSlip}/claim', [ReferenceSlipController::class, 'claim'])->name('slip.claim');
+
+        // Configuration
+        Route::get('organizations', [OrganizationController::class, 'index'])->name('organizations.index');
+        Route::post('organizations', [OrganizationController::class, 'store'])->name('organizations.store');
+        Route::get('organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');
+        Route::put('organizations/{organization}', [OrganizationController::class, 'update'])->name('organizations.update');
+        Route::post('organizations/{organization}/moderators', [ModeratorAssignmentController::class, 'store'])->name('moderators.store');
+        Route::delete('organizations/{organization}/moderators/{user}', [ModeratorAssignmentController::class, 'destroy'])->name('moderators.destroy');
+        Route::get('users', [UserController::class, 'index'])->name('users.index');
+        Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('users', [UserController::class, 'store'])->name('users.store');
     });
 
     // OSA Director
