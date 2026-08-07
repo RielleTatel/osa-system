@@ -8,6 +8,7 @@ use App\Http\Controllers\Org\DocumentUploadController;
 use App\Http\Controllers\Org\OsaForm3Controller;
 use App\Http\Controllers\OsaAdmin\ChecklistController;
 use App\Http\Controllers\OsaAdmin\ReviewQueueController;
+use App\Http\Controllers\OsaDirector\NotationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,7 +50,12 @@ Route::middleware('auth')->group(function () {
         Route::patch('checklist/{checklistItem}', [ChecklistController::class, 'update'])->name('checklist.update');
     });
 
-    Route::view('/osa-director/queue', 'osa-director.queue')->middleware('role:osa_director')->name('osa-director.queue');
+    // OSA Director
+    Route::middleware('role:osa_director')->prefix('osa-director')->name('osa-director.')->group(function () {
+        Route::get('queue', [NotationController::class, 'index'])->name('queue');
+        Route::get('requests/{activityRequest}', [NotationController::class, 'show'])->name('requests.show');
+        Route::post('requests/{activityRequest}/decision', [NotationController::class, 'decide'])->name('requests.decide');
+    });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
