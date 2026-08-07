@@ -44,7 +44,48 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function officer(): \App\Models\User
 {
-    // ..
+    return \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::OrgOfficer,
+        'organization_id' => \App\Models\Organization::factory(),
+    ]);
+}
+
+function admin(): \App\Models\User
+{
+    return \App\Models\User::factory()->create(['role' => \App\Enums\Role::OsaAdmin]);
+}
+
+function director(): \App\Models\User
+{
+    return \App\Models\User::factory()->create(['role' => \App\Enums\Role::OsaDirector]);
+}
+
+function moderatorFor(\App\Models\ActivityRequest $request): \App\Models\User
+{
+    $moderator = \App\Models\User::factory()->create(['role' => \App\Enums\Role::Moderator]);
+    $moderator->moderatedOrganizations()->attach($request->organization_id);
+
+    return $moderator;
+}
+
+/**
+ * @return array<string, mixed>
+ */
+function validRequestPayload(array $overrides = []): array
+{
+    return array_merge([
+        'activity_type' => 'in_campus',
+        'title' => 'Acquaintance Party',
+        'nature_of_activity' => 'Social',
+        'nature_of_engagement' => 'organizer',
+        'date_start' => now()->addDays(5)->toDateString(),
+        'date_end' => now()->addDays(5)->toDateString(),
+        'time_of_activity' => '13:00',
+        'venue' => 'Carlos Dominguez Hall',
+        'purpose' => 'Welcome the freshmen.',
+        'participants' => [['full_name' => 'Juan Dela Cruz', 'year_course' => 'BSCS 2']],
+        'schedule_items' => [['time_slot' => '13:00-14:00', 'description' => 'Opening program']],
+    ], $overrides);
 }
