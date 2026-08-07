@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Moderator\EndorsementController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Moderator\OsaForm3ApprovalController;
 use App\Http\Controllers\Org\ActivityRequestController;
 use App\Http\Controllers\Org\DocumentUploadController;
@@ -74,6 +76,13 @@ Route::middleware('auth')->group(function () {
         Route::get('requests/{activityRequest}', [NotationController::class, 'show'])->name('requests.show');
         Route::post('requests/{activityRequest}/decision', [NotationController::class, 'decide'])->name('requests.decide');
     });
+
+    // Notifications (all roles)
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
+    // Records archive (OSA staff)
+    Route::get('archive', [ArchiveController::class, 'index'])
+        ->middleware('role:osa_admin,osa_director')->name('archive.index');
 
     // Shared authenticated PDF downloads (authorized per request in the controller)
     Route::get('requests/{activityRequest}/slip.pdf', [ReferenceSlipController::class, 'slipPdf'])->name('slip.pdf');
