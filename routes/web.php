@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Moderator\EndorsementController;
 use App\Http\Controllers\Org\ActivityRequestController;
 use App\Http\Controllers\Org\DocumentUploadController;
 use App\Http\Controllers\ProfileController;
@@ -22,7 +23,13 @@ Route::middleware('auth')->group(function () {
         Route::post('requests/{activityRequest}/documents', [DocumentUploadController::class, 'store'])->name('documents.store');
     });
 
-    Route::view('/moderator/queue', 'moderator.queue')->middleware('role:moderator')->name('moderator.queue');
+    // Moderator
+    Route::middleware('role:moderator')->prefix('moderator')->name('moderator.')->group(function () {
+        Route::get('queue', [EndorsementController::class, 'index'])->name('queue');
+        Route::get('requests/{activityRequest}', [EndorsementController::class, 'show'])->name('requests.show');
+        Route::post('requests/{activityRequest}/decision', [EndorsementController::class, 'decide'])->name('requests.decide');
+    });
+
     Route::view('/osa-admin/queue', 'osa-admin.queue')->middleware('role:osa_admin')->name('osa-admin.queue');
     Route::view('/osa-director/queue', 'osa-director.queue')->middleware('role:osa_director')->name('osa-director.queue');
 
