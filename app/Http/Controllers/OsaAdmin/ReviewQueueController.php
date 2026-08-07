@@ -75,6 +75,26 @@ class ReviewQueueController extends Controller
         return redirect()->route('osa-admin.queue')->with('status', 'Decision recorded.');
     }
 
+    public function approve(Request $request, ActivityRequest $activityRequest)
+    {
+        abort_unless($activityRequest->status === ActivityStatus::AwaitingPhysical, 422);
+
+        $request->validate([
+            'final_scan' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
+        ]);
+
+        $attributes = ['status' => ActivityStatus::Approved];
+        if ($request->hasFile('final_scan')) {
+            $attributes['final_scan_path'] = $request->file('final_scan')
+                ->store("uploads/{$activityRequest->id}", 'public');
+        }
+        $activityRequest->update($attributes);
+
+        Notification::send($activityRequest->organization->officers, new StatusChanged($activityRequest));
+
+        return back()->with('status', 'Request marked as approved.');
+    }
+
     public function nudge(ActivityRequest $activityRequest)
     {
         $missing = $activityRequest->checklistItems()

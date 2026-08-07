@@ -10,6 +10,7 @@ use App\Http\Controllers\OsaAdmin\ChecklistController;
 use App\Http\Controllers\OsaAdmin\ReviewQueueController;
 use App\Http\Controllers\OsaDirector\NotationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReferenceSlipController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -47,7 +48,10 @@ Route::middleware('auth')->group(function () {
         Route::post('requests/{activityRequest}/start-review', [ReviewQueueController::class, 'startReview'])->name('requests.start-review');
         Route::post('requests/{activityRequest}/decision', [ReviewQueueController::class, 'decide'])->name('requests.decide');
         Route::post('requests/{activityRequest}/nudge', [ReviewQueueController::class, 'nudge'])->name('requests.nudge');
+        Route::post('requests/{activityRequest}/approve', [ReviewQueueController::class, 'approve'])->name('requests.approve');
         Route::patch('checklist/{checklistItem}', [ChecklistController::class, 'update'])->name('checklist.update');
+        Route::post('requests/{activityRequest}/slip', [ReferenceSlipController::class, 'generate'])->name('slip.generate');
+        Route::post('slips/{referenceSlip}/claim', [ReferenceSlipController::class, 'claim'])->name('slip.claim');
     });
 
     // OSA Director
@@ -56,6 +60,10 @@ Route::middleware('auth')->group(function () {
         Route::get('requests/{activityRequest}', [NotationController::class, 'show'])->name('requests.show');
         Route::post('requests/{activityRequest}/decision', [NotationController::class, 'decide'])->name('requests.decide');
     });
+
+    // Shared authenticated PDF downloads (authorized per request in the controller)
+    Route::get('requests/{activityRequest}/slip.pdf', [ReferenceSlipController::class, 'slipPdf'])->name('slip.pdf');
+    Route::get('osa-form-3/{osaForm3}.pdf', [ReferenceSlipController::class, 'osaForm3Pdf'])->name('osa-form-3.pdf');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
