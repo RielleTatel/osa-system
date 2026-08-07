@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Org\ActivityRequestController;
+use App\Http\Controllers\Org\DocumentUploadController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,7 @@ Route::middleware('auth')->group(function () {
         Route::get('requests/create', [ActivityRequestController::class, 'create'])->name('requests.create');
         Route::post('requests', [ActivityRequestController::class, 'store'])->name('requests.store');
         Route::get('requests/{activityRequest}', [ActivityRequestController::class, 'show'])->name('requests.show');
+        Route::post('requests/{activityRequest}/documents', [DocumentUploadController::class, 'store'])->name('documents.store');
     });
 
     Route::view('/moderator/queue', 'moderator.queue')->middleware('role:moderator')->name('moderator.queue');
