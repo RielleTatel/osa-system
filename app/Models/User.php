@@ -41,4 +41,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Organization::class, 'organization_moderator');
     }
+
+    public function passwordResetRequests()
+    {
+        return $this->hasMany(PasswordResetRequest::class);
+    }
 }

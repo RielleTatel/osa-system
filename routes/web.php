@@ -11,6 +11,7 @@ use App\Http\Controllers\Org\OsaForm3Controller;
 use App\Http\Controllers\OsaAdmin\ChecklistController;
 use App\Http\Controllers\OsaAdmin\ModeratorAssignmentController;
 use App\Http\Controllers\OsaAdmin\OrganizationController;
+use App\Http\Controllers\OsaAdmin\PasswordResetController;
 use App\Http\Controllers\OsaAdmin\ReviewQueueController;
 use App\Http\Controllers\OsaAdmin\UserController;
 use App\Http\Controllers\OsaDirector\NotationController;
@@ -68,6 +69,8 @@ Route::middleware('auth')->group(function () {
         Route::get('users', [UserController::class, 'index'])->name('users.index');
         Route::get('users/create', [UserController::class, 'create'])->name('users.create');
         Route::post('users', [UserController::class, 'store'])->name('users.store');
+        Route::get('password-resets', [PasswordResetController::class, 'index'])->name('password-resets.index');
+        Route::post('password-resets/{passwordResetRequest}', [PasswordResetController::class, 'update'])->name('password-resets.update');
     });
 
     // OSA Director

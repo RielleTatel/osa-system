@@ -13,15 +13,26 @@
         <div class="bg-paper border border-slate-200 rounded-xl divide-y divide-slate-200 shadow-sm">
             @forelse($notifications as $notification)
                 @php $data = $notification->data; @endphp
-                <a href="{{ route($showRoute, $data['activity_request_id']) }}"
-                   class="flex items-start gap-3 p-4 hover:bg-paper-muted/60 {{ $notification->read_at ? '' : 'bg-blue-50/40' }}">
-                    <span class="mt-1 w-2 h-2 rounded-full shrink-0 {{ $notification->read_at ? 'bg-slate-200' : 'bg-gold-500' }}"></span>
-                    <div>
-                        <p class="text-sm font-medium text-ink-900">{{ $data['title'] ?? 'Activity request' }}</p>
-                        <p class="text-sm text-slate-500">{{ $data['message'] ?? '' }}</p>
-                        <p class="text-xs text-slate-400 mt-0.5">{{ $notification->created_at->diffForHumans() }}</p>
+                @if(isset($data['activity_request_id']))
+                    <a href="{{ route($showRoute, $data['activity_request_id']) }}"
+                       class="flex items-start gap-3 p-4 hover:bg-paper-muted/60 {{ $notification->read_at ? '' : 'bg-blue-50/40' }}">
+                        <span class="mt-1 w-2 h-2 rounded-full shrink-0 {{ $notification->read_at ? 'bg-slate-200' : 'bg-gold-500' }}"></span>
+                        <div>
+                            <p class="text-sm font-medium text-ink-900">{{ $data['title'] ?? 'Activity request' }}</p>
+                            <p class="text-sm text-slate-500">{{ $data['message'] ?? '' }}</p>
+                            <p class="text-xs text-slate-400 mt-0.5">{{ $notification->created_at->diffForHumans() }}</p>
+                        </div>
+                    </a>
+                @else
+                    <div class="flex items-start gap-3 p-4 {{ $notification->read_at ? '' : 'bg-blue-50/40' }}">
+                        <span class="mt-1 w-2 h-2 rounded-full shrink-0 {{ $notification->read_at ? 'bg-slate-200' : 'bg-gold-500' }}"></span>
+                        <div>
+                            <p class="text-sm font-medium text-ink-900">{{ $data['title'] ?? 'Notification' }}</p>
+                            <p class="text-sm text-slate-500">{{ $data['message'] ?? '' }}</p>
+                            <p class="text-xs text-slate-400 mt-0.5">{{ $notification->created_at->diffForHumans() }}</p>
+                        </div>
                     </div>
-                </a>
+                @endif
             @empty
                 <div class="p-12 text-center">
                     <h3 class="font-display text-lg font-extrabold uppercase tracking-wide text-ink-900">No notifications</h3>

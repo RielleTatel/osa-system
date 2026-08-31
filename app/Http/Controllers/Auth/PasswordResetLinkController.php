@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\PasswordResetRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class PasswordResetLinkController extends Controller
 {
     /**
-     * Display the password reset link request view.
+     * Display the password reset request view.
      */
     public function create(): View
     {
@@ -20,9 +20,10 @@ class PasswordResetLinkController extends Controller
     }
 
     /**
-     * Handle an incoming password reset link request.
+     * Queue a password reset request for OSA Admin to fulfill.
      *
-     * @throws ValidationException
+     * No email is sent — OSA Admin reviews the request and sets a new
+     * password for the account directly.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -30,16 +31,14 @@ class PasswordResetLinkController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $user = User::where('email', $request->email)->first();
 
-        return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+        if ($user && ! $user->passwordResetRequests()->pending()->exists()) {
+            $user->passwordResetRequests()->create(['status' => 'pending']);
+        }
+
+        // Same message regardless of whether the email matched, to avoid
+        // revealing which accounts exist.
+        return back()->with('status', 'If that account exists, your request has been sent to the OSA office. You will be notified once your password is reset.');
     }
 }

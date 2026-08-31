@@ -21,6 +21,7 @@
             'osa-admin.queue' => 'Review queue',
             'osa-admin.organizations.index' => 'Organizations',
             'osa-admin.users.index' => 'Accounts',
+            'osa-admin.password-resets.index' => 'Password resets',
             'archive.index' => 'Archive',
         ],
         \App\Enums\Role::OsaDirector => [
