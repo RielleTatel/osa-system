@@ -49,7 +49,7 @@
                             @php
                                 $finalActedAt = $request->approvals->max('acted_at');
                                 $turnaround = $request->submitted_at && $finalActedAt
-                                    ? $request->submitted_at->diffInDays($finalActedAt).' days'
+                                    ? $request->submitted_at->diffForHumans($finalActedAt, true)
                                     : '—';
                             @endphp
                             <tr class="hover:bg-paper-muted/60">
