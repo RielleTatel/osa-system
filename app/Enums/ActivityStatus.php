@@ -18,4 +18,9 @@ enum ActivityStatus: string
     {
         return ucfirst(str_replace('_', ' ', $this->value));
     }
+
+    public function trackerLabel(): string
+    {
+        return $this === self::Denied ? 'Not approved' : $this->label();
+    }
 }

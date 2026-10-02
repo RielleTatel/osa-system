@@ -25,6 +25,7 @@ class ActivityRequestService
                 'submitted_by' => $officer->id,
                 'status' => ActivityStatus::Submitted,
                 'submitted_at' => now(),
+                'expected_participants' => count($validated['participants'] ?? []) ?: null,
             ]);
 
             $request->participants()->createMany($validated['participants'] ?? []);

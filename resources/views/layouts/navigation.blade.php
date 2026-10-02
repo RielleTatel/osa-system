@@ -23,9 +23,11 @@
             'osa-admin.users.index' => 'Accounts',
             'osa-admin.password-resets.index' => 'Password resets',
             'archive.index' => 'Archive',
+            'tracker.index' => 'Tracker',
         ],
         \App\Enums\Role::OsaDirector => [
             'osa-director.queue' => 'Notation queue',
+            'tracker.index' => 'Tracker',
             'archive.index' => 'Archive',
         ],
     };

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\ActivityTrackerController;
+use App\Http\Controllers\ActivityReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Moderator\EndorsementController;
 use App\Http\Controllers\NotificationController;
@@ -84,6 +86,19 @@ Route::middleware('auth')->group(function () {
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
     // Records archive (OSA staff)
+    Route::middleware('role:osa_admin,osa_director')->prefix('tracker/reports')->name('tracker.reports.')->group(function () {
+        Route::get('/', [ActivityReportController::class, 'index'])->name('index');
+        Route::post('/', [ActivityReportController::class, 'store'])->name('store');
+        Route::get('{activityReport}', [ActivityReportController::class, 'show'])->name('show');
+        Route::get('{activityReport}/download/{format}', [ActivityReportController::class, 'download'])->name('download');
+    });
+    Route::get('tracker', [ActivityTrackerController::class, 'index'])
+        ->middleware('role:osa_admin,osa_director')->name('tracker.index');
+    Route::get('tracker/activities/{activityRequest}', [ActivityTrackerController::class, 'show'])
+        ->middleware('role:osa_admin,osa_director')->name('tracker.show');
+    Route::patch('tracker/activities/{activityRequest}', [ActivityTrackerController::class, 'update'])
+        ->middleware('role:osa_admin')->name('tracker.update');
+
     Route::get('archive', [ArchiveController::class, 'index'])
         ->middleware('role:osa_admin,osa_director')->name('archive.index');
 

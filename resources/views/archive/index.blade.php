@@ -6,7 +6,7 @@
     @endphp
     <div class="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-6">
         <x-hero-panel title="Records archive">
-            Searchable history of completed and denied requests.
+            Searchable history of approved and denied requests.
         </x-hero-panel>
 
         <form method="GET" action="{{ route('archive.index') }}"

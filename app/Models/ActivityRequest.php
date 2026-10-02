@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ActivityProgress;
 use App\Enums\ActivityStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,7 @@ class ActivityRequest extends Model
     {
         return [
             'status' => ActivityStatus::class,
+            'progress' => ActivityProgress::class,
             'date_start' => 'date',
             'date_end' => 'date',
             'submitted_at' => 'datetime',
@@ -25,6 +27,11 @@ class ActivityRequest extends Model
     public function organization()
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    public function progressUpdates()
+    {
+        return $this->hasMany(ActivityProgressUpdate::class)->latest('id');
     }
 
     public function submitter()
