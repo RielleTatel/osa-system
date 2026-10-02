@@ -31,6 +31,7 @@ class ActivityRequestService
             $request->participants()->createMany($validated['participants'] ?? []);
             $request->scheduleItems()->createMany($validated['schedule_items'] ?? []);
             $this->checklist->seedFor($request);
+            app(ActivityEmailService::class)->submitted($request);
 
             return $request;
         });

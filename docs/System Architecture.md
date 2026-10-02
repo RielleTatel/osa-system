@@ -15,7 +15,7 @@
 | Database | MySQL via XAMPP | Local dev; `phpMyAdmin` for inspection, `.env` points to `127.0.0.1:3306` |
 | File storage | Laravel local disk (`storage/app/public`) | Symlinked via `php artisan storage:link`; holds uploaded IDs, participant lists, schedules |
 | Authorization | Laravel Policies + Gates (or `spatie/laravel-permission`) | Role-based access per Section 4 |
-| Notifications | Laravel Notifications (database + mail channel) | In-app alerts now, email later if needed |
+| Notifications | Laravel Notifications and Mail | In-app alerts plus queued SMTP notices for submissions and director review readiness |
 | PDF generation | `barryvdh/laravel-dompdf` (or similar) | For reference slips, OSA Form 3 printouts, pre-filled summaries |
 
 This is a monolithic server-rendered app — no separate API layer required for v1. Controllers return Blade views directly.
@@ -323,7 +323,7 @@ Both org and OSA Admin dashboards are just filtered/paginated `ActivityRequest::
 
 ## 8. Deferred / Not in v1
 
-- Queue workers for notifications (use `QUEUE_CONNECTION=sync` locally; revisit if email volume grows)
+- General notification workers remain deferred. Activity submission/director-readiness emails now use a dedicated transactional database queue; see [Activity email operations](operations/activity-email.md) for SMTP configuration and the required worker. The global `QUEUE_CONNECTION=sync` setting does not apply to these emails.
 - API layer / mobile app (Blade-only for now)
 - Multi-campus/branch support beyond the venue list in Section 4 of the form transcriptions
 - Digital signature capture (e-signatures) for the moderator endorsement — v1 uses simple "Approve" button + audit log, not a cryptographic signature

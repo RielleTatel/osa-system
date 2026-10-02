@@ -31,6 +31,16 @@ return [
 
     'connections' => [
 
+        // Must share the activity transaction's default database connection.
+        'activity-email' => [
+            'driver' => 'database',
+            'connection' => null,
+            'table' => 'jobs',
+            'queue' => 'activity-email',
+            'retry_after' => 120,
+            'after_commit' => false,
+        ],
+
         'sync' => [
             'driver' => 'sync',
         ],

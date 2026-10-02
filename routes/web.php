@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\ArchiveController;
-use App\Http\Controllers\ActivityTrackerController;
+use App\Http\Controllers\ActivityEmailController;
 use App\Http\Controllers\ActivityReportController;
+use App\Http\Controllers\ActivityTrackerController;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Moderator\EndorsementController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Moderator\OsaForm3ApprovalController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Org\ActivityRequestController;
 use App\Http\Controllers\Org\DocumentUploadController;
 use App\Http\Controllers\Org\OsaForm3Controller;
@@ -84,6 +85,9 @@ Route::middleware('auth')->group(function () {
 
     // Notifications (all roles)
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
+    Route::get('email-deliveries', [ActivityEmailController::class, 'index'])
+        ->middleware('role:osa_admin,osa_director')->name('activity-email.index');
 
     // Records archive (OSA staff)
     Route::middleware('role:osa_admin,osa_director')->prefix('tracker/reports')->name('tracker.reports.')->group(function () {

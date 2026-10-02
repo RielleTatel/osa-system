@@ -22,11 +22,13 @@
             'osa-admin.organizations.index' => 'Organizations',
             'osa-admin.users.index' => 'Accounts',
             'osa-admin.password-resets.index' => 'Password resets',
+            'activity-email.index' => 'Email deliveries',
             'archive.index' => 'Archive',
             'tracker.index' => 'Tracker',
         ],
         \App\Enums\Role::OsaDirector => [
             'osa-director.queue' => 'Notation queue',
+            'activity-email.index' => 'Email deliveries',
             'tracker.index' => 'Tracker',
             'archive.index' => 'Archive',
         ],

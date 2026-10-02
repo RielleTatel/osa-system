@@ -11,6 +11,7 @@ use App\Models\ChecklistItem;
 use App\Models\User;
 use App\Notifications\PacketReadyForPhysicalStage;
 use App\Notifications\StatusChanged;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 
 class ChecklistService
@@ -88,22 +89,26 @@ class ChecklistService
 
     public function verify(ChecklistItem $item, ?string $notes = null): void
     {
-        $item->update([
-            'status' => ChecklistStatus::Verified,
-            'notes' => $notes ?? $item->notes,
-        ]);
+        DB::transaction(function () use ($item, $notes) {
+            // Lock the parent before any checklist changes so concurrent
+            // verifications cannot announce the same handoff twice.
+            $request = ActivityRequest::lockForUpdate()->findOrFail($item->activity_request_id);
+            $item->update([
+                'status' => ChecklistStatus::Verified,
+                'notes' => $notes ?? $item->notes,
+            ]);
 
-        $request = $item->activityRequest;
+            if ($request->status === ActivityStatus::OsaReviewing && $this->isComplete($request)) {
+                $request->update(['status' => ActivityStatus::DocsComplete]);
+                app(ActivityEmailService::class)->directorReady($request);
 
-        if ($request->status === ActivityStatus::OsaReviewing && $this->isComplete($request)) {
-            $request->update(['status' => ActivityStatus::DocsComplete]);
-
-            Notification::send(
-                User::where('role', Role::OsaAdmin)->get(),
-                new PacketReadyForPhysicalStage($request),
-            );
-            Notification::send($request->organization->officers, new StatusChanged($request));
-        }
+                Notification::send(
+                    User::where('role', Role::OsaAdmin)->get(),
+                    new PacketReadyForPhysicalStage($request),
+                );
+                Notification::send($request->organization->officers, new StatusChanged($request));
+            }
+        });
     }
 
     public function itemNameFor(DocumentType $type): string
