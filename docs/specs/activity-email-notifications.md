@@ -1,6 +1,6 @@
 # Activity email notifications
 
-Status: ready-for-agent (local only)
+Status: implemented and validated (local only, 2026-10-02)
 
 ## Problem Statement
 
